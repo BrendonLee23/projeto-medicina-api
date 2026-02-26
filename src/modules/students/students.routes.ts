@@ -1,16 +1,15 @@
 import { Router } from 'express';
 import { StudentsController } from './students.controller';
-import { authMiddleware } from '../../middlewares/auth.middleware';
 
 const router = Router();
 const studentsController = new StudentsController();
 
 /**
- * Rotas de alunos (todas protegidas por autenticação)
+ * Rotas de alunos (públicas para permitir criação de mensagens)
  */
 
 // GET /students
-router.get('/', authMiddleware, (req, res, next) => 
+router.get('/', (req, res, next) => 
   studentsController.getStudents(req, res, next)
 );
 
