@@ -6,11 +6,11 @@ const router = Router();
 const messagesController = new MessagesController();
 
 /**
- * Rotas de mensagens (todas protegidas por autenticação)
+ * Rotas de mensagens
  */
 
-// POST /messages
-router.post('/', authMiddleware, (req, res, next) =>
+// POST /messages (rota pública para cadastro de mensagens)
+router.post('/', (req, res, next) =>
   messagesController.createMessage(req, res, next)
 );
 
