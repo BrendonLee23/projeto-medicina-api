@@ -66,6 +66,11 @@ class App {
    */
   public async listen(): Promise<void> {
     try {
+      console.log('🔧 Configurações:');
+      console.log(`   PORT: ${this.port}`);
+      console.log(`   NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`   DATABASE_URL: ${process.env.DATABASE_URL ? '✓ Configurada' : '✗ NÃO CONFIGURADA'}`);
+      
       // Conecta ao banco de dados
       await connectDatabase();
 
@@ -76,6 +81,7 @@ class App {
         console.log(`🚀 Servidor rodando na porta ${this.port}`);
         console.log(`📍 URL: http://${host}:${this.port}/api`);
         console.log(`🏥 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log('✅ Servidor pronto para receber requisições!');
       });
 
       // Graceful shutdown
@@ -92,6 +98,7 @@ class App {
       });
     } catch (error) {
       console.error('❌ Erro ao iniciar servidor:', error);
+      console.error('Stack:', error instanceof Error ? error.stack : 'N/A');
       process.exit(1);
     }
   }

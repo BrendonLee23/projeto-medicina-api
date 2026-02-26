@@ -20,9 +20,18 @@ export async function connectDatabase() {
   try {
     console.log('🔄 Conectando ao banco de dados...');
     
-    // Timeout de 10 segundos para conectar
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL não está configurada nas variáveis de ambiente');
+    }
+    
+    // Mostra informações da connection string (sem senha)
+    const dbUrl = process.env.DATABASE_URL;
+    const sanitized = dbUrl.replace(/:[^:@]+@/, ':***@');
+    console.log(`   Connection string: ${sanitized}`);
+    
+    // Timeout de 15 segundos para conectar
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Timeout ao conectar ao banco')), 10000)
+      setTimeout(() => reject(new Error('Timeout ao conectar ao banco (15s)')), 15000)
     );
     
     await Promise.race([
@@ -30,11 +39,14 @@ export async function connectDatabase() {
       timeoutPromise
     ]);
     
+    // Testa a conexão
+    await prisma.$queryRaw`SELECT 1`;
+    
     console.log('✅ Banco de dados conectado com sucesso');
   } catch (error) {
     console.error('❌ Erro ao conectar ao banco de dados:', error);
-    console.error('DATABASE_URL:', process.env.DATABASE_URL ? 'Configurada' : 'NÃO CONFIGURADA');
-    process.exit(1);
+    console.error('   Detalhes:', error instanceof Error ? error.message : String(error));
+    throw error;
   }
 }
 
