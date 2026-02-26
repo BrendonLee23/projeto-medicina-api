@@ -45,15 +45,19 @@ export class SetupController {
         "José", "Teste"
       ];
 
-      // Criar alunos
+      // Criar alunos (verificar se já existem)
       const studentsCreated = [];
       for (const nome of alunos) {
-        const student = await prisma.student.upsert({
-          where: { name: nome },
-          update: {},
-          create: { name: nome }
+        const existing = await prisma.student.findFirst({
+          where: { name: nome }
         });
-        studentsCreated.push(student);
+        
+        if (!existing) {
+          const student = await prisma.student.create({
+            data: { name: nome }
+          });
+          studentsCreated.push(student);
+        }
       }
 
       console.log(`✅ ${studentsCreated.length} alunos criados`);
@@ -65,8 +69,7 @@ export class SetupController {
         update: {},
         create: {
           username: 'Aymee',
-          password: passwordHash,
-          role: 'admin'
+          password: passwordHash
         }
       });
 
