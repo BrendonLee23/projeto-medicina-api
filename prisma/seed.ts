@@ -81,7 +81,8 @@ const studentNames = [
   'Victor Felipe Cerma Fernandez',
   'Victor Gabriel de Alencar Ribeiro',
   'Vinicius Moura de Araujo',
-  'Xayane da Silva Rebouças'
+  'Xayane da Silva Rebouças',
+  'Teste'
 ];
 
 async function main() {
