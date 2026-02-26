@@ -9,7 +9,9 @@
     "start": "node dist/server.js",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "postinstall": "prisma generate",
+    "db:setup": "prisma migrate deploy && prisma db seed"
   },
   "keywords": [],
   "author": "",
