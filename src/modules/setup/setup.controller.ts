@@ -22,11 +22,68 @@ export class SetupController {
         return;
       }
 
-      console.log('🔄 Iniciando seed do banco de dados...');
+      console.log('🔄 Iniciando setup do banco de dados...');
 
       // Testar conexão
       await prisma.$connect();
       console.log('✅ Conectado ao banco de dados');
+
+      // Criar tabelas (via SQL raw para PostgreSQL)
+      try {
+        console.log('📦 Criando tabelas...');
+        
+        await prisma.$executeRaw`
+          CREATE TABLE IF NOT EXISTS "users" (
+            "id" TEXT NOT NULL,
+            "username" TEXT NOT NULL,
+            "password" TEXT NOT NULL,
+            "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP(3) NOT NULL,
+            CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+          );
+        `;
+
+        await prisma.$executeRaw`
+          CREATE UNIQUE INDEX IF NOT EXISTS "users_username_key" ON "users"("username");
+        `;
+
+        await prisma.$executeRaw`
+          CREATE TABLE IF NOT EXISTS "students" (
+            "id" TEXT NOT NULL,
+            "name" TEXT NOT NULL,
+            "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP(3) NOT NULL,
+            CONSTRAINT "students_pkey" PRIMARY KEY ("id")
+          );
+        `;
+
+        await prisma.$executeRaw`
+          CREATE INDEX IF NOT EXISTS "students_name_idx" ON "students"("name");
+        `;
+
+        await prisma.$executeRaw`
+          CREATE TABLE IF NOT EXISTS "messages" (
+            "id" TEXT NOT NULL,
+            "studentId" TEXT NOT NULL,
+            "familyName" TEXT NOT NULL,
+            "relationship" TEXT NOT NULL,
+            "message" TEXT NOT NULL,
+            "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP(3) NOT NULL,
+            CONSTRAINT "messages_pkey" PRIMARY KEY ("id"),
+            CONSTRAINT "messages_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE
+          );
+        `;
+
+        console.log('✅ Tabelas criadas com sucesso');
+      } catch (error: any) {
+        // Se der erro de tabela já existir, ignorar
+        if (error.code === '42P07') {
+          console.log('ℹ️  Tabelas já existem');
+        } else {
+          throw error;
+        }
+      }
 
       // Lista de alunos
       const alunos = [
