@@ -13,7 +13,7 @@ export class AuthController {
    * POST /auth/login
    * Realiza login do usuário
    */
-  async login(req: Request, res: Response, next: NextFunction) {
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Validar dados de entrada com Zod
       const validatedData = loginSchema.parse(req.body);
@@ -22,7 +22,7 @@ export class AuthController {
       const result = await authService.login(validatedData);
 
       // Retornar resposta com status 200
-      return res.status(200).json(result);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }

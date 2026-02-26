@@ -14,7 +14,7 @@ export class StudentsController {
    * GET /students
    * Lista alunos com filtro opcional e paginação
    */
-  async getStudents(req: AuthRequest, res: Response, next: NextFunction) {
+  async getStudents(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       // Validar query params
       const validatedQuery = getStudentsQuerySchema.parse(req.query);
@@ -23,7 +23,7 @@ export class StudentsController {
       const result = await studentsService.getStudents(validatedQuery);
 
       // Retornar resposta
-      return res.status(200).json(result);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }

@@ -10,7 +10,7 @@ const router = Router();
  */
 
 // Rota de health check
-router.get('/health', (req, res) => {
+router.get('/health', (_req, res) => {
   res.status(200).json({
     status: 'OK',
     message: 'API está funcionando',

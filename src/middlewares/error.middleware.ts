@@ -7,9 +7,9 @@ import { ZodError } from 'zod';
  */
 export const errorHandler = (
   error: Error,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   // Log do erro no servidor (em produção, usar um logger apropriado)
   console.error('❌ Erro capturado:', error);

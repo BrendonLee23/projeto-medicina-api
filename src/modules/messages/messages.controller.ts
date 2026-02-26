@@ -18,7 +18,7 @@ export class MessagesController {
    * POST /messages
    * Cria uma nova mensagem
    */
-  async createMessage(req: AuthRequest, res: Response, next: NextFunction) {
+  async createMessage(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       // Validar dados de entrada
       const validatedData = createMessageSchema.parse(req.body);
@@ -27,7 +27,7 @@ export class MessagesController {
       const message = await messagesService.createMessage(validatedData);
 
       // Retornar resposta com status 201
-      return res.status(201).json(message);
+      res.status(201).json(message);
     } catch (error) {
       next(error);
     }
@@ -37,7 +37,7 @@ export class MessagesController {
    * GET /messages
    * Lista mensagens com paginação
    */
-  async getMessages(req: AuthRequest, res: Response, next: NextFunction) {
+  async getMessages(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       // Validar query params
       const validatedQuery = getMessagesQuerySchema.parse(req.query);
@@ -46,7 +46,7 @@ export class MessagesController {
       const result = await messagesService.getMessages(validatedQuery);
 
       // Retornar resposta
-      return res.status(200).json(result);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
@@ -56,7 +56,7 @@ export class MessagesController {
    * GET /messages/:id
    * Busca uma mensagem por ID
    */
-  async getMessageById(req: AuthRequest, res: Response, next: NextFunction) {
+  async getMessageById(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
 
@@ -64,7 +64,7 @@ export class MessagesController {
       const message = await messagesService.getMessageById(id);
 
       // Retornar resposta
-      return res.status(200).json(message);
+      res.status(200).json(message);
     } catch (error) {
       next(error);
     }
@@ -74,7 +74,7 @@ export class MessagesController {
    * PUT /messages/:id
    * Atualiza uma mensagem
    */
-  async updateMessage(req: AuthRequest, res: Response, next: NextFunction) {
+  async updateMessage(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
 
@@ -85,7 +85,7 @@ export class MessagesController {
       const message = await messagesService.updateMessage(id, validatedData);
 
       // Retornar resposta
-      return res.status(200).json(message);
+      res.status(200).json(message);
     } catch (error) {
       next(error);
     }
@@ -95,7 +95,7 @@ export class MessagesController {
    * DELETE /messages/:id
    * Deleta uma mensagem
    */
-  async deleteMessage(req: AuthRequest, res: Response, next: NextFunction) {
+  async deleteMessage(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
 
@@ -103,7 +103,7 @@ export class MessagesController {
       const result = await messagesService.deleteMessage(id);
 
       // Retornar resposta
-      return res.status(200).json(result);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
