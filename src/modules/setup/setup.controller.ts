@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
@@ -12,7 +12,7 @@ export class SetupController {
    * POST /setup/database
    * Executa seed do banco de dados
    */
-  async setupDatabase(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async setupDatabase(req: Request, res: Response): Promise<void> {
     try {
       // Chave de segurança simples
       const { key } = req.body;

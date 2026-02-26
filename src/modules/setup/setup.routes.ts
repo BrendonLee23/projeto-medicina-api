@@ -5,6 +5,6 @@ const router = Router();
 const setupController = new SetupController();
 
 // Rota pública para setup do banco
-router.post('/database', (req, res, next) => setupController.setupDatabase(req, res, next));
+router.post('/database', (req, res) => setupController.setupDatabase(req, res));
 
 export default router;
