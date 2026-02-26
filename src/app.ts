@@ -69,10 +69,12 @@ class App {
       // Conecta ao banco de dados
       await connectDatabase();
 
-      // Inicia o servidor
-      this.app.listen(this.port, () => {
+      // Inicia o servidor (0.0.0.0 para aceitar conexões externas)
+      const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+      
+      this.app.listen(this.port, host, () => {
         console.log(`🚀 Servidor rodando na porta ${this.port}`);
-        console.log(`📍 URL: http://localhost:${this.port}/api`);
+        console.log(`📍 URL: http://${host}:${this.port}/api`);
         console.log(`🏥 Environment: ${process.env.NODE_ENV || 'development'}`);
       });
 
