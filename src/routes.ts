@@ -2,6 +2,7 @@ import { Router } from 'express';
 import authRoutes from './modules/auth/auth.routes';
 import studentsRoutes from './modules/students/students.routes';
 import messagesRoutes from './modules/messages/messages.routes';
+import setupRoutes from './modules/setup/setup.routes';
 
 const router = Router();
 
@@ -26,5 +27,8 @@ router.use('/students', studentsRoutes);
 
 // Rotas de mensagens
 router.use('/messages', messagesRoutes);
+
+// Rota de setup (apenas para primeira configuração)
+router.use('/setup', setupRoutes);
 
 export default router;
