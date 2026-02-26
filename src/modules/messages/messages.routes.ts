@@ -14,8 +14,8 @@ router.post('/', (req, res, next) =>
   messagesController.createMessage(req, res, next)
 );
 
-// GET /messages
-router.get('/', authMiddleware, (req, res, next) =>
+// GET /messages (rota pública para listar mensagens)
+router.get('/', (req, res, next) =>
   messagesController.getMessages(req, res, next)
 );
 
