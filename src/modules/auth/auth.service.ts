@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { LoginInput } from './auth.validation';
 import { AppError } from '../../middlewares/error.middleware';
 
@@ -37,13 +37,14 @@ export class AuthService {
 
     // Gerar JWT token
     const secret = process.env.JWT_SECRET;
-    const expiresIn = String(process.env.JWT_EXPIRES_IN || '7d');
+    const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
 
     if (!secret) {
       throw new AppError('Configuração de JWT ausente', 500);
     }
 
-    const accessToken = jwt.sign({ userId: user.id }, secret, { expiresIn });
+    const options: SignOptions = { expiresIn };
+    const accessToken = jwt.sign({ userId: user.id }, secret, options);
 
     // Retornar token e dados básicos do usuário (sem a senha)
     return {
