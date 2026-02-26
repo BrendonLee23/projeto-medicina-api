@@ -42,10 +42,15 @@ export class AuthService {
       throw new AppError('Configuração de JWT ausente', 500);
     }
 
+    // Define explicitamente as opções para evitar problemas de tipo do TypeScript
+    const signOptions = {
+      expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+    };
+
     const accessToken = jwt.sign(
       { userId: user.id }, 
       secret, 
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      signOptions as jwt.SignOptions
     );
 
     // Retornar token e dados básicos do usuário (sem a senha)
