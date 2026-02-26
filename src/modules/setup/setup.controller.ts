@@ -24,6 +24,10 @@ export class SetupController {
 
       console.log('🔄 Iniciando seed do banco de dados...');
 
+      // Testar conexão
+      await prisma.$connect();
+      console.log('✅ Conectado ao banco de dados');
+
       // Lista de alunos
       const alunos = [
         "Ana Clara", "Beatriz", "Carlos Eduardo", "Daniel", "Eduardo",
@@ -57,36 +61,58 @@ export class SetupController {
             data: { name: nome }
           });
           studentsCreated.push(student);
+        } else {
+          console.log(`ℹ️  Aluno já existe: ${nome}`);
         }
       }
 
-      console.log(`✅ ${studentsCreated.length} alunos criados`);
+      console.log(`✅ ${studentsCreated.length} novos alunos criados`);
+
+      // Verificar total de alunos
+      const totalStudents = await prisma.student.count();
+      console.log(`📊 Total de alunos no banco: ${totalStudents}`);
 
       // Criar usuário de teste
       const passwordHash = await bcrypt.hash('Braga', 10);
-      const user = await prisma.user.upsert({
-        where: { username: 'Aymee' },
-        update: {},
-        create: {
-          username: 'Aymee',
-          password: passwordHash
-        }
+      const existingUser = await prisma.user.findUnique({
+        where: { username: 'Aymee' }
       });
 
-      console.log('✅ Usuário criado:', user.username);
+      if (!existingUser) {
+        const user = await prisma.user.create({
+          data: {
+            username: 'Aymee',
+            password: passwordHash
+          }
+        });
+        console.log('✅ Usuário criado:', user.username);
+      } else {
+        console.log('ℹ️  Usuário Aymee já existe');
+      }
+
+      // Contar mensagens
+      const totalMessages = await prisma.message.count();
+      console.log(`📧 Total de mensagens no banco: ${totalMessages}`);
+
       console.log('🎉 Seed concluído com sucesso!');
 
       res.status(200).json({
         success: true,
         message: 'Banco de dados configurado com sucesso!',
         details: {
-          studentsCreated: studentsCreated.length,
-          userCreated: user.username
+          newStudentsCreated: studentsCreated.length,
+          totalStudents,
+          totalMessages,
+          userExists: !!existingUser
         }
       });
     } catch (error) {
       console.error('❌ Erro no setup:', error);
-      next(error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
+        details: error
+      });
     } finally {
       await prisma.$disconnect();
     }
